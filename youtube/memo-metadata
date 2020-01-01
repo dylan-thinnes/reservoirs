@@ -1,0 +1,7 @@
+#!/bin/bash
+mkdir -p youtube/metadata
+if [[ -f "youtube/metadata/$1" ]]; then
+    cat "youtube/metadata/$1"
+else
+    ./youtube/get-metadata "$1" | tee "youtube/metadata/$1"
+fi
