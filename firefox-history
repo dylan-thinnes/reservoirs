@@ -1,0 +1,5 @@
+#!/bin/bash
+TMP=`mktemp "tmp.firefox-history-sink.XXXXXXXX"`
+cp ~/.mozilla/firefox/*.default-*/places.sqlite "$TMP"
+sqlite3 "$TMP" "SELECT DISTINCT moz_places.url FROM moz_places"
+rm "$TMP"

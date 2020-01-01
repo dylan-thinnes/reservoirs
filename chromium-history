@@ -1,0 +1,5 @@
+#!/bin/bash
+TMP=`mktemp "tmp.chromium-history-sink.XXXXXXXX"`
+cp ~/.config/chromium/Default/History "$TMP"
+sqlite3 "$TMP" 'SELECT DISTINCT urls.url FROM urls'
+rm "$TMP"

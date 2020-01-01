@@ -1,0 +1,2 @@
+#!/bin/bash
+grep -E "youtube.com/watch?" | grep -oE "v=[^&#]+" | cut -c3-13
