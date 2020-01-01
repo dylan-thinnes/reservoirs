@@ -1,0 +1,3 @@
+#!/bin/bash
+mkdir -p youtube/metadata
+./youtube/get-metadata "$1" | tee "youtube/metadata/$1"
