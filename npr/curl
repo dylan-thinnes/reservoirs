@@ -1,0 +1,3 @@
+#!/bin/bash
+# curl with cookies to get around npr choice
+curl -L --cookie 'trackingChoice=true;choiceVersion=1;dateOfChoice=1577896743631' $@
