@@ -1,0 +1,113 @@
+#!/bin/bash
+# Retrieve new options
+NEWOPTS=`getopt -n lorem-ipsum -o 's:w:a:dh' -l 'start-with-lipsum:,what:,amount:,debug,help' -- "$@"`
+
+# Set positional arguments
+eval set -- $NEWOPTS
+
+# Default START/WHAT/AMOUNT
+START=no
+WHAT=paras
+AMOUNT=5
+DEBUG=0
+
+# Parse arguments
+while true; do
+    case "$1" in
+        -s|--start-with-lipsum)
+            shift
+            START=$1
+            ;;
+        -w|--what)
+            shift
+            WHAT=$1
+            ;;
+        -a|--amount)
+            shift
+            AMOUNT=$1
+            ;;
+        -d|--debug)
+            DEBUG=1
+            ;;
+        -h|--help)
+            echo """
+lorem-ipsum - a lorem-ipsum generator, thinly wrapping lipsum.com's web API
+
+USAGE: lorem-ipsum [OPTIONS]
+
+REQUIREMENTS:
+    Requires jq, curl, bash, and an internet connection.
+
+OPTIONS:
+    -h / --help
+        Print this help and exit.
+
+    -s / --start-with-lipsum
+        Tells the API whether to start with 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+
+        NOTE:
+        If the amount of text specified is too small, at least 'Lorem ipsum dolor sit amet.' will be output.
+
+    -w / --what
+        Tells the API what we want.
+        Can be one of: 'paras', 'words', 'bytes'
+        Defaults to 'paras'
+
+    -a / --amount
+        Tells the API how much of the value in '--what' we want.
+        Must be a positive integer.
+        Defaults to '5'
+
+        For example, \`lorem-ipsum --what paras --amount 10\` would return 10 paragraphs.
+
+        NOTE:
+        If '--what bytes' is specified, the the API always returns at least 27 bytes.
+
+    -d / --debug
+        Output the raw JSON from the API rather only the text. Includes such fields as "credit" and "generated".
+"""
+            exit
+            ;;
+        --)
+            break
+            ;;
+    esac
+    shift
+done
+
+errecho () {
+    echo $@ 1>&2
+}
+
+check_fixed () {
+    for i in ${@:2}; do
+        if [[ "$i" == "$1" ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+if ! check_fixed $START yes no; then
+    errecho "Start (-s, --start-with-lipsum) was '$START', must be either 'yes' or 'no'."
+    exit 1
+fi
+
+if ! check_fixed $WHAT paras words bytes; then
+    errecho "What (-w, --what) was '$WHAT', must be one of: paras, words, bytes"
+    exit 1
+fi
+
+if ! echo $AMOUNT | grep -E '^[[:digit:]]+$' > /dev/null; then
+    errecho "Amount (-a, --amount) was '$AMOUNT', must be a positive integer."
+    exit 1
+fi
+
+if [[ $DEBUG == 0 ]]; then
+    FILTER=".feed.lipsum"
+else
+    FILTER="."
+fi
+
+curl --silent "https://lipsum.com/feed/json?start=$START&what=$WHAT&amount=$AMOUNT" \
+    | jq -rM $FILTER
