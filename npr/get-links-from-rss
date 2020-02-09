@@ -1,0 +1,4 @@
+#!/bin/bash
+xsltproc ./npr/get-links-from-rss.xsl - |
+    tail -n+2 |
+    utils/lines-to-objects 4
