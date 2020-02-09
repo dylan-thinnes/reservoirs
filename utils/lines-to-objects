@@ -1,0 +1,3 @@
+#!/bin/bash
+N=${1:-1}
+jq -Rs "[[split(\"\n\") | _nwise(2) | if length < 2 then {} else {(.[0]): .[1]} end] | _nwise($N) | add]"
