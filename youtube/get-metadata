@@ -1,4 +1,2 @@
 #!/bin/bash
-curl --silent "https://www.youtube.com/watch?v=$1" |\
-    xsltproc --html youtube/get-metadata.xsl - |\
-    jq -Rs '[split("\n") | _nwise(2) | if length < 2 then {} else {(.[0]): .[1]} end] | add'
+youtube-dl -J "https://www.youtube.com/watch?v=$1"
