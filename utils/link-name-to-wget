@@ -1,0 +1,2 @@
+#!/bin/bash
+jq -r ".[] | @sh \"wget \(.link) -O \(.name).mp3\""
