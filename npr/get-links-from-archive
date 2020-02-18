@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+from bs4 import BeautifulSoup
+import json
+import sys
+
+def get_by_class(node, _class):
+    return node.find_all(attrs={'class': _class})
+
+def get_one_by_class(node, _class):
+    return node.find(attrs={'class': _class})
+
+def get_episodes(node):
+    return get_by_class(node, "program-show")
+
+def get_segments(node):
+    return get_by_class(node, "program-segment")
+
+if __name__ == "__main__":
+    with open(0) as fh:
+        soup = BeautifulSoup(fh, features="html.parser")
+        out = {}
+
+        episodes = get_episodes(soup)
+        for episode in episodes:
+            title = get_one_by_class(episode, 'program-show__title')
+            title = str(title.a.string).strip()
+            episode['title'] = title
+
+            eout = {}
+            out[title] = eout
+
+            segments = get_segments(episode)
+            for segment in segments:
+                title = get_one_by_class(segment, 'program-segment__title')
+                title = str(title.a.string).strip()
+                segment['title'] = title
+
+                link = get_one_by_class(segment, 'audio-tool-download')
+                if link != None:
+                    link = str(link.a['href']).strip()
+                else:
+                    link = None
+
+                eout[title] = { 'name': title, 'link': link, }
+
+        print(json.dumps(out, sort_keys=True, indent=4))
+
+
+
+
