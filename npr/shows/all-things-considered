@@ -1,0 +1,5 @@
+#!/bin/bash
+YYYY=$1
+MM=$2
+DD=$3
+./npr/curl "https://www.npr.org/programs/all-things-considered/archive?date=$DD-$MM-$YYYY"
