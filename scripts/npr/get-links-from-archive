@@ -28,6 +28,8 @@ if __name__ == "__main__":
 
             eout = {}
             out[title] = eout
+            eout['date'] = episode['data-episode-date']
+            eout['id'] = episode['data-episode-id']
 
             segments = get_segments(episode)
             for segment in segments:
