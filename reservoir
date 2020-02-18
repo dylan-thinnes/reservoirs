@@ -1,0 +1,5 @@
+#!/bin/bash
+(
+    cd /home/djt/projects/200107-reservoir/sinks/scripts
+    $@
+)

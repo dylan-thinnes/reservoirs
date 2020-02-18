@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+_reservoir_completions () {
+    local A="$(pwd)"
+    cd /home/djt/projects/200107-reservoir/sinks/scripts/
+    for name in $2*; do
+        if [[ -d $name ]] || [[ -x $name ]]; then
+            export COMPREPLY+=($(ls -dF --color=never "$name"))
+        fi
+    done
+    cd "$A"
+}
+
+complete -r reservoir
+complete -o filenames -F _reservoir_completions reservoir
