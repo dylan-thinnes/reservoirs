@@ -1,2 +1,0 @@
-#!/bin/bash
-./npr/curl 'https://www.npr.org/rss/rss.php?id=3'
